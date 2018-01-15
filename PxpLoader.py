@@ -5,7 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import sys
 import ProcessSingleWave,TimeSepForceObj
-from GeneralUtil.python import GenUtilities as pGenUtil
+from UtilGeneral import GenUtilities as pGenUtil
 
 from pprint import pformat
 from igor.binarywave import load as loadibw

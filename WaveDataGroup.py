@@ -1,7 +1,7 @@
-import IgorUtil.PythonAdapter.ProcessSingleWave
+import UtilIgor.ProcessSingleWave
 import CypherUtil
 import numpy as np
-from IgorUtil.PythonAdapter import ProcessSingleWave
+from UtilIgor import ProcessSingleWave
 
 # Class for storing associated waves from a known data file
 class WaveDataGroup():
