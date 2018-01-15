@@ -2,7 +2,7 @@
 from __future__ import division
 # This file is used for importing the common utilities classes.
 import numpy as np
-from  GeneralUtil.python import GenUtilities  as pGenUtil
+from  UtilGeneral.python import GenUtilities  as pGenUtil
 import os
 
 # given a waverecord, how to access the actual wave sruct
