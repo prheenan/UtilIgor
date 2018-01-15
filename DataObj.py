@@ -1,6 +1,6 @@
 import numpy as np
 
-from IgorUtil.PythonAdapter.ProcessSingleWave import WaveObj
+from ProcessSingleWave import WaveObj
 from CypherUtil import ConvertSepForceToZsnsrDeflV
 
 class DataObj:
