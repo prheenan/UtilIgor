@@ -1,5 +1,5 @@
 import IgorUtil.PythonAdapter.ProcessSingleWave
-import GeneralUtil.python.LibUtil.CypherUtil as CypherUtil
+import CypherUtil
 import numpy as np
 from IgorUtil.PythonAdapter import ProcessSingleWave
 
