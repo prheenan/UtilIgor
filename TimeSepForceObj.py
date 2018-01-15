@@ -4,8 +4,8 @@ from __future__ import division
 import numpy as np
 import matplotlib.pyplot as plt
 import copy
-from UtilIgor.WaveDataGroup import WaveDataGroup
-from UtilIgor.DataObj import DataObj as DataObj
+from WaveDataGroup import WaveDataGroup
+from DataObj import DataObj as DataObj
 
 class Event():
     def __init__(self,start,end):

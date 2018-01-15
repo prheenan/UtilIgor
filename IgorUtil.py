@@ -5,7 +5,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 # import the patrick-specific utilities
 import UtilGeneral.GenUtilities  as pGenUtil
-import UtilGeneral.CheckpointUtilities as pCheckUtil
 from scipy.signal import savgol_filter
 DEF_FILTER_CONST = 0.005 # 0.5%
 

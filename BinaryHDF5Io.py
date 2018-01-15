@@ -3,7 +3,7 @@ from __future__ import division
 # This file is used for importing the common utilities classes.
 import numpy as np
 
-from UtilGeneral.LibUtil import HDF5Util  as HDF5Util
+import HDF5Util
 from WaveDataGroup import WaveDataGroup
 from TimeSepForceObj import TimeSepForceObj
 import ProcessSingleWave
