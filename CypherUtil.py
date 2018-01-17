@@ -219,7 +219,7 @@ def GetYNameAndType(names):
         yType = MOD_Y_TYPE_DEFL_METERS
         yName = FILE_END_Y_DEFL_METERS
     else:
-        raise KeyError("Don't recognize a y value amoung {:s}".\
+        raise KeyError("Don't recognize a y value amoung {}".\
                        format(names))
     return yType,SanitSingle(yName)
 
@@ -266,7 +266,7 @@ def SanitSingle(x):
     Returns
         sanitized name
     """
-    return x.lower()
+    return str(x.lower())
     
 def Sanit(x):
     """
