@@ -99,7 +99,7 @@ def GetNote(wavestruct):
     # split the note by newlines
     # we turn any \r or ; into a newline, any = into a colon.
     # we then split on newlines, then parse <key><literal :><value>
-    mNote =  wavestruct[WAVE_NOTE_STR]\
+    mNote =  str(wavestruct[WAVE_NOTE_STR])\
         .replace("\r","\n")\
         .replace(";","\n")\
         .replace("=",":")\
