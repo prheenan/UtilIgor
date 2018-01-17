@@ -1,7 +1,7 @@
 import numpy as np
 
-from ProcessSingleWave import WaveObj
-from CypherUtil import ConvertSepForceToZsnsrDeflV
+from .ProcessSingleWave import WaveObj
+from .CypherUtil import ConvertSepForceToZsnsrDeflV
 
 class DataObj:
     def __init__(self,time,sep,force,metaInfo,filterIdx=None):
