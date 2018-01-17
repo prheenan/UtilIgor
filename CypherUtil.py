@@ -208,7 +208,7 @@ def GetYNameAndType(names):
     Returns:
          tuple of yType,yName. yname is sanitized by 'sanit'
     """
-    names = Sanit(names)
+    print(SanitSingle(FILE_END_Y_FORCE))
     if (SanitSingle(FILE_END_Y_FORCE) in names):
         yType = MOD_Y_TYPE_FORCE_NEWTONS
         yName = FILE_END_Y_FORCE
