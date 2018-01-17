@@ -173,6 +173,18 @@ class TimeSepForceObj():
         Returns the (low resolution) zsnsr
         """
         return self.LowResData.Zsnsr
+    @Force.setter 
+    def Force(self,f):
+        self.LowResData.force = f
+    @Separation.setter 
+    def Separation(self,s):
+        self.LowResData.sep = s
+    @ZSnsr.setter 
+    def ZSnsr(self,z):
+        self.LowResData.Zsnsr = z
+    @Time.setter 
+    def Time(self,t):
+        self.LowResData.time = t
     @property 
     def K(self):
         return self.Meta.__dict__['K']
