@@ -9,7 +9,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import sys
 from . import ProcessSingleWave,TimeSepForceObj
-from .UtilGeneral import GenUtilities as pGenUtil
+from UtilGeneral import GenUtilities as pGenUtil
 
 from pprint import pformat
 from .igor.binarywave import load as loadibw
@@ -166,7 +166,7 @@ def GroupWavesByEnding(WaveObjs,grouping_function):
         dictionary of lists; each sublist is a 'grouping' of waves by extension
     """
     # get all the names of the wave objects
-    rawNames = [o.Name() for o in WaveObjs]
+    rawNames = [str(o.Name()) for o in WaveObjs]
     # assumed waves end with a number, followed by an ending
     # we need to figure out what the endings and numbers are
     digitEndingList = []

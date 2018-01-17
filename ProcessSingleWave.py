@@ -6,7 +6,7 @@ from __future__ import print_function
 from __future__ import unicode_literals
 # This file is used for importing the common utilities classes.
 import numpy as np
-from .UtilGeneral import GenUtilities  as pGenUtil
+import UtilGeneral.GenUtilities  as pGenUtil
 import os
 
 # given a waverecord, how to access the actual wave sruct
@@ -26,13 +26,15 @@ ENDING_CONCAT = "Concat"
 # make a verbose pattern for getting names
 IgorNamePattern = re.compile(r"""
                          ^ # start of the string
+                         (?:b')?   # possible, non-capturing bytes start
                          (.*?)     # anything, non-greedy
                          (\d+)      # followed by only digits (id)
                          .*?        # optional, non greedy anything (underscores, etc)
                          ([a-zA-Z]*) # followed by possible letters (this is like "Force","Zsnsr", etc)
                          [a-zA-Z_\d]*? # Non greedy, things after (e.g. "_Ret2")
+                         (?:')?   # possible, non-capturing bytes end
                          $ # end of the string""",
-                            re.X)
+                             re.X)
 def IgorNameRegex(Name):
     """
     Given a wave name, gets the preamble (eg X060715Image) digit (eg: 0001) 
@@ -99,16 +101,19 @@ def GetNote(wavestruct):
     # split the note by newlines
     # we turn any \r or ; into a newline, any = into a colon.
     # we then split on newlines, then parse <key><literal :><value>
-    mNote =  wavestruct[WAVE_NOTE_STR]\
+    mNote =  str(wavestruct[WAVE_NOTE_STR])\
         .replace("\r","\n")\
         .replace(";","\n")\
         .replace("=",":")\
         .splitlines()
     pattern = re.compile(r"""
+                         (?:b')?      # possible non-capture byte start
+                         [\s\r]?        # possible whitespace
                          ([^:]+)      # any non-colon (captured)
                          :            # a literal colon
                          \s*          # possible whitespace (ignored)
                          ([^\s]+)     # any non whitespace (captured)
+                         (?:')?      # possible non-capture byte end
                          """,re.VERBOSE)
     tuples = []                         
     for line in mNote:
@@ -119,7 +124,7 @@ def GetNote(wavestruct):
         groups = matched.groups()
         # convert the value into a float, if possible. 
         value = SafeConvertValue(groups[1])
-        key = groups[0]
+        key = groups[0].replace(r"\r","")
         tuples.append([key,value])
     # make sure all the values have length at least one
     # XXX may want to check for NOTE_DELIM on each string
