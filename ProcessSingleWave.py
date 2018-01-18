@@ -101,11 +101,11 @@ def GetNote(wavestruct):
     # split the note by newlines
     # we turn any \r or ; into a newline, any = into a colon.
     # we then split on newlines, then parse <key><literal :><value>
-    mNote =  str(wavestruct[WAVE_NOTE_STR])\
-        .replace("\r","\n")\
-        .replace(";","\n")\
-        .replace("=",":")\
-        .splitlines()
+    mNote =  wavestruct[WAVE_NOTE_STR]
+    mNote = mNote.replace(r"\r",r"\n")
+    mNote = mNote.replace(";",r"\n")
+    mNote = mNote.replace("=",":")
+    mNote = mNote.splitlines()
     pattern = re.compile(r"""
                          (?:b')?      # possible non-capture byte start
                          [\s\r]?        # possible whitespace
@@ -449,7 +449,7 @@ def ValidName(mWave):
     # loop through each extension, return true on a match
     name = str(name.lower())
     for ext in DATA_EXT:
-        if ext in name:
+        if name.endswith(ext):
             return True
     return False
 
