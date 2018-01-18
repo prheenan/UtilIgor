@@ -3,7 +3,6 @@ from __future__ import division
 # other good compatibility recquirements for python3
 from __future__ import absolute_import
 from __future__ import print_function
-from __future__ import unicode_literals
 # This file is used for importing the common utilities classes.
 import numpy as np
 from ..UtilGeneral import GenUtilities  as pGenUtil
@@ -28,7 +27,7 @@ IgorNamePattern = re.compile(r"""
                          ^ # start of the string
                          (?:b')?   # possible, non-capturing bytes start
                          (.*?)     # anything, non-greedy
-                         (\d+)      # followed by only digits (id)
+                         (\d{4,})      # followed by only digits (id)
                          .*?        # optional, non greedy anything (underscores, etc)
                          ([a-zA-Z]*) # followed by possible letters (this is like "Force","Zsnsr", etc)
                          [a-zA-Z_\d]*? # Non greedy, things after (e.g. "_Ret2")
@@ -102,21 +101,20 @@ def GetNote(wavestruct):
     # we turn any \r or ; into a newline, any = into a colon.
     # we then split on newlines, then parse <key><literal :><value>
     mNote =  wavestruct[WAVE_NOTE_STR]
-    mNote = mNote.replace(r"\r",r"\n")
-    mNote = mNote.replace(";",r"\n")
-    mNote = mNote.replace("=",":")
-    mNote = mNote.splitlines()
+    # get note:value pairs
+    lines = mNote.strip().split("\r")
     pattern = re.compile(r"""
                          (?:b')?      # possible non-capture byte start
                          [\s\r]?        # possible whitespace
                          ([^:]+)      # any non-colon (captured)
-                         :            # a literal colon
+                         [:=]            # a literal colon or equals
                          \s*          # possible whitespace (ignored)
-                         ([^\s]+)     # any non whitespace (captured)
+                         ([^\s;]+)     # any non whitespace or semicolon(captured)
+                         [\s;]*      # possible whitespace or semicolon
                          (?:')?      # possible non-capture byte end
                          """,re.VERBOSE)
     tuples = []                         
-    for line in mNote:
+    for line in lines:
         matched = pattern.match(line)
         if not matched:
             continue
@@ -448,9 +446,15 @@ def ValidName(mWave):
     name = GetWaveName(mWave)
     # loop through each extension, return true on a match
     name = str(name.lower())
+    match = IgorNamePattern.match(str(name))
+    # do we have a valid name?
+    if (match is None):
+        return False
+    # do we have a known extension?
     for ext in DATA_EXT:
         if name.endswith(ext):
             return True
+    # valid name, but invalid extension
     return False
 
 def pprint(data):
