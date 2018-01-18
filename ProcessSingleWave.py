@@ -5,7 +5,7 @@ from __future__ import absolute_import
 from __future__ import print_function
 # This file is used for importing the common utilities classes.
 import numpy as np
-from ..UtilGeneral import GenUtilities  as pGenUtil
+from .UtilGeneral import GenUtilities  as pGenUtil
 import os
 
 # given a waverecord, how to access the actual wave sruct
