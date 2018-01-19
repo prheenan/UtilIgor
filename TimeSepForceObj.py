@@ -88,6 +88,8 @@ class TimeSepForceObj():
         to_ret.LowResData = \
             data_obj_by_columns_and_dict(time,sep,force,meta)
         assert to_ret.Force.size == force.size , "Slice didn't work."
+        # manually fix the Zsnsr
+        to_ret.LowResData.Zsnsr = sanit(self.LowResData.Zsnsr)
         return to_ret
     def HasSurfaceDwell(self):
         """
