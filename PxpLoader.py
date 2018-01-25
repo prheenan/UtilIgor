@@ -48,18 +48,18 @@ class SurfaceImage(ProcessSingleWave.WaveObj):
         Returns the height as a 2-D array in nm
         """
         return self.height * 1e9
-    def height_nm_rel(self):
+    def height_nm_rel(self,surface_pct=0):
         """
         returns the height, relative to the 'surface' (see args) in nm
 
         Args:
-             pct_considered_surface: the lowest pct heights are consiered to be
+             surface_pct: the lowest pct heights are consiered to be
              the absolute surface. between 0 and 100
         Returns:
              height_nm_rel, offset to the pct
         """
         height_nm = self.height_nm()
-        MinV = np.min(height_nm)
+        MinV = np.percentile(height_nm,surface_pct)
         height_nm_rel = height_nm - MinV
         return height_nm_rel
     def range_microns(self):
