@@ -153,7 +153,7 @@ def LoadAllWavesFromPxp(filepath,load_func=loadpxp,ValidFunc=IsValidFec):
     return mWaves
 
 
-def GroupWavesByEnding(WaveObjs,grouping_function):
+def GroupWavesByEnding(WaveObjs,grouping_function,**kw):
     """
     Given a list of waves and (optional) list of endings, groups the waves
 
@@ -175,7 +175,7 @@ def GroupWavesByEnding(WaveObjs,grouping_function):
     goodObj = []
     for n,obj in zip(rawNames,WaveObjs):
         try:
-            digitEndingList.append(grouping_function(n))
+            digitEndingList.append(grouping_function(n,**kw))
             goodNames.append(n)
             goodObj.append(obj)
         except ValueError as e:
@@ -204,6 +204,10 @@ def GroupWavesByEnding(WaveObjs,grouping_function):
         for idxWithSameId in val:
             objToAdd = goodObj[idxWithSameId]
             tmp[endings[idxWithSameId].lower()] = objToAdd
+        if (key is None):
+            # no id given; assume it is just zero
+            assert len(result.items()) == 1 ,"No ids given, but multiple waves."
+            key = "0"
         finalList[preamble[idxWithSameId] + key] = tmp
     return finalList
     

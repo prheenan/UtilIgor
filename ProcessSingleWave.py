@@ -103,7 +103,7 @@ def GetNote(wavestruct):
     # we then split on newlines, then parse <key><literal :><value>
     mNote =  wavestruct[WAVE_NOTE_STR]
     # get note:value pairs
-    lines = mNote.strip().split("\r")
+    lines = str(mNote).strip().split("\r")
     pattern = re.compile(r"""
                          (?:b')?      # possible non-capture byte start
                          [\s\r]?        # possible whitespace
