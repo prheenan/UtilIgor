@@ -207,7 +207,8 @@ def GroupWavesByEnding(WaveObjs,grouping_function):
         finalList[preamble[idxWithSameId] + key] = tmp
     return finalList
     
-def LoadPxp(inFile,grouping_function=ProcessSingleWave.IgorNameRegex,**kwargs):
+def LoadPxp(inFile,grouping_function=ProcessSingleWave.IgorNameRegex,
+            name_pattern=ProcessSingleWave.IgorNamePattern,**kwargs):
     """
     Convenience Wrapper. Given a pxp file, reads in all data waves and
     groups by common ID
@@ -219,7 +220,8 @@ def LoadPxp(inFile,grouping_function=ProcessSingleWave.IgorNameRegex,**kwargs):
         dictionary: see GroupWavesByEnding, same output
     """
     mWaves = LoadAllWavesFromPxp(inFile,**kwargs)
-    return GroupWavesByEnding(mWaves,grouping_function=grouping_function)
+    return GroupWavesByEnding(mWaves,grouping_function=grouping_function,
+                              name_pattern=name_pattern)
 
 def load_ibw_from_directory(in_dir,grouping_function,limit=None):
     """

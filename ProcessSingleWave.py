@@ -34,18 +34,19 @@ IgorNamePattern = re.compile(r"""
                          (?:')?   # possible, non-capturing bytes end
                          $ # end of the string""",
                              re.X)
-def IgorNameRegex(Name):
+def IgorNameRegex(Name,name_pattern=IgorNamePattern):
     """
     Given a wave name, gets the preamble (eg X060715Image) digit (eg: 0001) 
     and ending (eg: Defl). If it cant match, throws an error.
 
     Args:
         Name: name of the wave
+        name_pattern: re.compile mattern with .match, taking in a string
     
     Returns:
         tuple of digit(ending) 
     """
-    match = IgorNamePattern.match(str(Name))
+    match = name_pattern.match(str(Name))
     if match:
         preamble = match.group(1)
         digit = match.group(2)
