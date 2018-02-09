@@ -102,6 +102,7 @@ def GetNote(wavestruct):
     # we turn any \r or ; into a newline, any = into a colon.
     # we then split on newlines, then parse <key><literal :><value>
     mNote =  wavestruct[WAVE_NOTE_STR]
+    mNote = str(mNote).replace(";","\r\n")
     # get note:value pairs
     lines = str(mNote).strip().split("\r")
     pattern = re.compile(r"""
@@ -319,10 +320,7 @@ class WaveObj:
         # Mark this wave as a concatenated wave
         # Change the name to reflect it is concatenated
         oldName = self.Name()
-        # get the preamble and digit associated with out name
-        preamble,digit,_ = IgorNameRegex(oldName)
-        # essentially just replace whatever it was by "concat"
-        newName = preamble + digit + ENDING_CONCAT
+        newName = str(oldName) + str(ENDING_CONCAT)
         self.isConcat = True
         self.SetName(newName)
     def GetTimeSepForceAsCols(self):
