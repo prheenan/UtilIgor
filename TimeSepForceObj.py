@@ -69,8 +69,8 @@ class TimeSepForceObj():
         self.has_events = False
         self.Events = []
         if (mWaves is not None):
-            self.LowResData = \
-                DataObjByConcat(mWaves.CreateTimeSepForceWaveObject())
+            ConcatWave = mWaves.CreateTimeSepForceWaveObject()
+            self.LowResData = DataObjByConcat(ConcatWave)
             # by default, assume we *dont* have high res data
             self.HiResData = None
             if (mWaves.HasHighBandwidth()):

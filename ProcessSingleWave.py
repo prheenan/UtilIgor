@@ -277,7 +277,8 @@ class WaveObj:
                 to_ret =  1./self.Note["NumPtsPerSec"]
             except KeyError:
                 # Rob
-                to_ret =  1./self.Note["SamplingRate"]
+                return 1 / self.Note["SamplingRate"]
+
         return to_ret
     def GetXArray(self):
         """
