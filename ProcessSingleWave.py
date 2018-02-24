@@ -34,18 +34,19 @@ IgorNamePattern = re.compile(r"""
                          (?:')?   # possible, non-capturing bytes end
                          $ # end of the string""",
                              re.X)
-def IgorNameRegex(Name):
+def IgorNameRegex(Name,name_pattern=IgorNamePattern):
     """
     Given a wave name, gets the preamble (eg X060715Image) digit (eg: 0001) 
     and ending (eg: Defl). If it cant match, throws an error.
 
     Args:
         Name: name of the wave
+        name_pattern: re.compile mattern with .match, taking in a string
     
     Returns:
         tuple of digit(ending) 
     """
-    match = IgorNamePattern.match(str(Name))
+    match = name_pattern.match(str(Name))
     if match:
         preamble = match.group(1)
         digit = match.group(2)
@@ -101,8 +102,9 @@ def GetNote(wavestruct):
     # we turn any \r or ; into a newline, any = into a colon.
     # we then split on newlines, then parse <key><literal :><value>
     mNote =  wavestruct[WAVE_NOTE_STR]
+    mNote = str(mNote).replace(";","\r\n")
     # get note:value pairs
-    lines = mNote.strip().split("\r")
+    lines = str(mNote).strip().split("\r")
     pattern = re.compile(r"""
                          (?:b')?      # possible non-capture byte start
                          [\s\r]?        # possible whitespace
@@ -275,7 +277,8 @@ class WaveObj:
                 to_ret =  1./self.Note["NumPtsPerSec"]
             except KeyError:
                 # Rob
-                to_ret =  1./self.Note["SamplingRate"]
+                return 1 / self.Note["SamplingRate"]
+
         return to_ret
     def GetXArray(self):
         """
@@ -318,10 +321,7 @@ class WaveObj:
         # Mark this wave as a concatenated wave
         # Change the name to reflect it is concatenated
         oldName = self.Name()
-        # get the preamble and digit associated with out name
-        preamble,digit,_ = IgorNameRegex(oldName)
-        # essentially just replace whatever it was by "concat"
-        newName = preamble + digit + ENDING_CONCAT
+        newName = str(oldName) + str(ENDING_CONCAT)
         self.isConcat = True
         self.SetName(newName)
     def GetTimeSepForceAsCols(self):

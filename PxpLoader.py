@@ -48,18 +48,18 @@ class SurfaceImage(ProcessSingleWave.WaveObj):
         Returns the height as a 2-D array in nm
         """
         return self.height * 1e9
-    def height_nm_rel(self):
+    def height_nm_rel(self,surface_pct=0):
         """
         returns the height, relative to the 'surface' (see args) in nm
 
         Args:
-             pct_considered_surface: the lowest pct heights are consiered to be
+             surface_pct: the lowest pct heights are consiered to be
              the absolute surface. between 0 and 100
         Returns:
              height_nm_rel, offset to the pct
         """
         height_nm = self.height_nm()
-        MinV = np.min(height_nm)
+        MinV = np.percentile(height_nm,surface_pct)
         height_nm_rel = height_nm - MinV
         return height_nm_rel
     def range_microns(self):
@@ -153,7 +153,7 @@ def LoadAllWavesFromPxp(filepath,load_func=loadpxp,ValidFunc=IsValidFec):
     return mWaves
 
 
-def GroupWavesByEnding(WaveObjs,grouping_function):
+def GroupWavesByEnding(WaveObjs,grouping_function,**kw):
     """
     Given a list of waves and (optional) list of endings, groups the waves
 
@@ -175,7 +175,7 @@ def GroupWavesByEnding(WaveObjs,grouping_function):
     goodObj = []
     for n,obj in zip(rawNames,WaveObjs):
         try:
-            digitEndingList.append(grouping_function(n))
+            digitEndingList.append(grouping_function(n,**kw))
             goodNames.append(n)
             goodObj.append(obj)
         except ValueError as e:
@@ -204,10 +204,15 @@ def GroupWavesByEnding(WaveObjs,grouping_function):
         for idxWithSameId in val:
             objToAdd = goodObj[idxWithSameId]
             tmp[endings[idxWithSameId].lower()] = objToAdd
+        if (key is None):
+            # no id given; assume it is just zero
+            assert len(result.items()) == 1 ,"No ids given, but multiple waves."
+            key = "0"
         finalList[preamble[idxWithSameId] + key] = tmp
     return finalList
     
-def LoadPxp(inFile,grouping_function=ProcessSingleWave.IgorNameRegex,**kwargs):
+def LoadPxp(inFile,grouping_function=ProcessSingleWave.IgorNameRegex,
+            name_pattern=ProcessSingleWave.IgorNamePattern,**kwargs):
     """
     Convenience Wrapper. Given a pxp file, reads in all data waves and
     groups by common ID
@@ -219,7 +224,8 @@ def LoadPxp(inFile,grouping_function=ProcessSingleWave.IgorNameRegex,**kwargs):
         dictionary: see GroupWavesByEnding, same output
     """
     mWaves = LoadAllWavesFromPxp(inFile,**kwargs)
-    return GroupWavesByEnding(mWaves,grouping_function=grouping_function)
+    return GroupWavesByEnding(mWaves,grouping_function=grouping_function,
+                              name_pattern=name_pattern)
 
 def load_ibw_from_directory(in_dir,grouping_function,limit=None):
     """
