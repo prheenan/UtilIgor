@@ -175,6 +175,12 @@ class TimeSepForceObj(object):
         Returns the (low resolution) zsnsr
         """
         return self.LowResData.Zsnsr
+    @property
+    def Zsnsr(self):
+        return self.ZSnsr
+    @Zsnsr.setter
+    def Zsnsr(self,s):
+        self.ZSnsr = s
     @Force.setter 
     def Force(self,f):
         self.LowResData.force = f
