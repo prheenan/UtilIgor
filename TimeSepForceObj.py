@@ -56,7 +56,7 @@ def data_obj_by_columns_and_dict(time,sep,force,meta_dict,*args,**kwargs):
     return DataObj(time,sep,force,Meta,*args,**kwargs)
 
 
-class TimeSepForceObj():
+class TimeSepForceObj(object):
     def __init__(self,mWaves=None):
         """
         Given a WaveDataGrop, gets an easier-to-use object, with low and 
@@ -130,10 +130,10 @@ class TimeSepForceObj():
             offset = np.min(self.Zsnsr)
         self.set_z_sensor(self.Zsnsr-offset)
     def set_z_sensor(self,set_to):
-        self.LowResData.Zsnsr = set_to
+        self.Zsnsr = set_to
     def offset(self,separation,zsnsr,force):
-        self.LowResData.force -= force
-        self.LowResData.sep-= separation
+        self.Force -= force
+        self.Separation = separation
         self.offset_z_sensor(zsnsr)
     @property
     def Zsnsr(self):
@@ -184,6 +184,12 @@ class TimeSepForceObj():
     @ZSnsr.setter 
     def ZSnsr(self,z):
         self.LowResData.Zsnsr = z
+    @property
+    def Zsnsr(self):
+        return self.Zsnsr
+    @Zsnsr.setter
+    def Zsnsr(self,z):
+        self.ZSnsr = z
     @Time.setter 
     def Time(self,t):
         self.LowResData.time = t
