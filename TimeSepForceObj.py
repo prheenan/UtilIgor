@@ -56,7 +56,7 @@ def data_obj_by_columns_and_dict(time,sep,force,meta_dict,*args,**kwargs):
     return DataObj(time,sep,force,Meta,*args,**kwargs)
 
 
-class TimeSepForceObj():
+class TimeSepForceObj(object):
     def __init__(self,mWaves=None):
         """
         Given a WaveDataGrop, gets an easier-to-use object, with low and 
