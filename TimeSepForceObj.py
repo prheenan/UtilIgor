@@ -133,7 +133,7 @@ class TimeSepForceObj(object):
         self.Zsnsr = set_to
     def offset(self,separation,zsnsr,force):
         self.Force -= force
-        self.Separation = separation
+        self.Separation -= separation
         self.offset_z_sensor(zsnsr)
     @property
     def Zsnsr(self):
