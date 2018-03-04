@@ -77,7 +77,7 @@ class TimeSepForceObj(object):
                 hiResConcat = mWaves.HighBandwidthCreateTimeSepForceWaveObject()
                 self.HiResData = DataObjByConcat(hiResConcat)
     def _slice(self,s):
-        to_ret = TimeSepForceObj()
+        to_ret = copy.deepcopy(self)
         sanit = lambda x: x[s].copy()
         force = sanit(self.LowResData.force)        
         time = sanit(self.LowResData.time)
