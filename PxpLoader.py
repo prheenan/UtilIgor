@@ -227,7 +227,8 @@ def LoadPxp(inFile,grouping_function=ProcessSingleWave.IgorNameRegex,
     return GroupWavesByEnding(mWaves,grouping_function=grouping_function,
                               name_pattern=name_pattern)
 
-def load_ibw_from_directory(in_dir,grouping_function,limit=None):
+def load_ibw_from_directory(in_dir,grouping_function,limit=None,
+                            f_file_name_valid=lambda f: True):
     """
     Convenience Wrapper. Given a directory, reads in all ibw and groups 
 
@@ -235,12 +236,13 @@ def load_ibw_from_directory(in_dir,grouping_function,limit=None):
         in_dir: where we are grouping 
         grouping_function: takes in a file name, see GroupWavesByEnding
         limit: maximum number to load
+        f_file_name_valid: return true if a given file name is valid
     Returns:
         dictionary: see GroupWavesByEnding, same output
     """
     assert in_dir is not None , "input directory was None; can't load there."
     files = pGenUtil.getAllFiles(in_dir,ext=".ibw")
-    ValidFunc= lambda *args,**keywords: True
+    files = [f for f in files if f_file_name_valid(f)]
     ibw_waves = [read_ibw_as_wave(f) for f in files]
     dict_raw = GroupWavesByEnding(ibw_waves,grouping_function=grouping_function)
     dict_ret = dict([ [k,v] for k,v in dict_raw.items()][:limit])
