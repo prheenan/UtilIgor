@@ -46,7 +46,7 @@ def run():
     (4) check that defl <-> Force works
     (5) check that deflV <-> Force works
     (6) check that deflV <-> defl works
-    (7) check x <-> x, where x is any of the above. 
+    (7) check x <-> x, where x is any of the above.
     """
     data_base = "../Data/conversion/Image0341"
     exts = ["Defl","DeflV","Force","Sep","Time","ZSnsr"]
