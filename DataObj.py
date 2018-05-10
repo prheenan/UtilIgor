@@ -30,7 +30,6 @@ class DataObj:
                          Note=self.meta)
         ForceObj = WaveObj(DataY=self.force,Note=self.meta)
         self.Zsnsr,_ =  ConvertSepForceToZsnsrDeflV(SepObj,ForceObj)
-        self.Zsnsr *= -1
     def GetTimeSepForce(self):
         """
         Returns time,sep,force as a tuple
