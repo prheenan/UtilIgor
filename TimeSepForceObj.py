@@ -116,6 +116,7 @@ class TimeSepForceObj(object):
         assert to_ret.Force.size == force.size , "Slice didn't work."
         # manually fix the Zsnsr
         to_ret.LowResData.Zsnsr = sanit(self.LowResData.Zsnsr)
+        to_ret.Events = self.Events
         return to_ret
     def HasSurfaceDwell(self):
         """
