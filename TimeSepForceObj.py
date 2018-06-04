@@ -30,7 +30,7 @@ http://stackoverflow.com/questions/2597278/python-load-variables-in-a-dict-into-
 
 def DataObjByConcat(ConcatData,*args,**kwargs):
     """
-    Initializes an data object from a concatenated wave object (e.g., 
+    Initializes an data object from a concatenated wave object (e.g.,
     high resolution time,sep, and force)
     
     Args:
@@ -55,6 +55,32 @@ def data_obj_by_columns_and_dict(time,sep,force,meta_dict,*args,**kwargs):
     Meta = Bunch(meta_dict)
     return DataObj(time,sep,force,Meta,*args,**kwargs)
 
+def _meta_dict(SpringConstant,Velocity,Invols=1,DwellSetting=0,DwellTime=0,
+               Name=""):
+    """
+    :param SpringConstant: of a trace
+    :param Velocity: ...
+    :param Invols: ...
+    :param DwellSetting: ...
+    :param DwellTime: ...
+    :return: meta dictionary, for input to  data_obj_by_columns_and_dict
+    """
+    return dict(SpringConstant=SpringConstant,
+                Velocity=Velocity,
+                Invols=Invols,
+                DwellSetting=DwellSetting,
+                DwellTime=DwellTime,
+                Name=Name)
+
+def _cols_to_TimeSepForceObj(**kw):
+    """
+    :param kw: keywords to use for  data_obj_by_columns_and_dict
+    :return:
+    """
+    data_obj = data_obj_by_columns_and_dict(**kw)
+    to_ret = TimeSepForceObj()
+    to_ret.LowResData = data_obj
+    return to_ret
 
 class TimeSepForceObj(object):
     def __init__(self,mWaves=None):
@@ -90,6 +116,7 @@ class TimeSepForceObj(object):
         assert to_ret.Force.size == force.size , "Slice didn't work."
         # manually fix the Zsnsr
         to_ret.LowResData.Zsnsr = sanit(self.LowResData.Zsnsr)
+        to_ret.Events = self.Events
         return to_ret
     def HasSurfaceDwell(self):
         """
@@ -196,6 +223,9 @@ class TimeSepForceObj(object):
     @property
     def Velocity(self):
         return self.LowResData.meta.Velocity
+    @Velocity.setter
+    def Velocity(self,v):
+        self.Meta.Velocity = v
     @property
     def ApproachVelocity(self):
         return self.Meta.ApproachVelocity

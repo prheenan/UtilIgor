@@ -432,6 +432,13 @@ def GetWaveName(mWave):
     header = GetHeader(WaveStruct)
     name = GetWaveNameFromHeader(header)
     return name
+
+def HasValidExt(mWave):
+    name = GetWaveName(mWave.wave).lower()
+    for ext in DATA_EXT:
+        if ext in name:
+            return True
+    return False
     
 def ValidName(mWave):
     """  
