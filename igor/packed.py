@@ -30,7 +30,7 @@ from .record.folder import FolderStartRecord as _FolderStartRecord
 from .record.folder import FolderEndRecord as _FolderEndRecord
 from .record.variables import VariablesRecord as _VariablesRecord
 from .record.wave import WaveRecord as _WaveRecord
-
+import warnings
 
 # From PTN003:
 # Igor writes other kinds of records in a packed experiment file, for
@@ -72,9 +72,10 @@ def load(filename, strict=True, ignore_unknown=True):
             if not b:
                 break
             if len(b) < PackedFileRecordHeader.size:
-                raise ValueError(
+                warnings.warn(
                     ('not enough data for the next record header ({} < {})'
                      ).format(len(b), PackedFileRecordHeader.size))
+                continue
             _LOG.debug('reading a new packed experiment file record')
             header = PackedFileRecordHeader.unpack_from(b)
             if header['version'] and not byte_order:
@@ -91,9 +92,10 @@ def load(filename, strict=True, ignore_unknown=True):
                         'reordered version: {}'.format(header['version']))
             data = bytes(f.read(header['numDataBytes']))
             if len(data) < header['numDataBytes']:
-                raise ValueError(
+                warnings.warn(
                     ('not enough data for the next record ({} < {})'
                      ).format(len(b), header['numDataBytes']))
+                continue
             record_type = _RECORD_TYPE.get(
                 header['recordType'] & PACKEDRECTYPE_MASK, _UnknownRecord)
             _LOG.debug('the new record has type {} ({}).'.format(
@@ -109,7 +111,7 @@ def load(filename, strict=True, ignore_unknown=True):
     finally:
         _LOG.debug('finished loading {} records from {}'.format(
                 len(records), filename))
-        if not hasattr(filename, 'read'):
+        if not hasattr(filename, 'read') and not f.closed:
             f.close()
 
     filesystem = _build_filesystem(records)
