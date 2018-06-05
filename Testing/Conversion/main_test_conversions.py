@@ -7,7 +7,7 @@ from __future__ import unicode_literals
 # This file is used for importing the common utilities classes.
 import numpy as np
 import matplotlib.pyplot as plt
-import sys
+import sys, os
 
 sys.path.append("../../../")
 
@@ -48,7 +48,12 @@ def run():
     (6) check that deflV <-> defl works
     (7) check x <-> x, where x is any of the above.
     """
-    data_base = "../Data/conversion/Image0341"
+    if os.name == "nt":
+        server_dir = "//perknas2.colorado.edu/group/"
+    else:
+        server_dir = "//Volumes/group/"
+    base = server_dir + "4Patrick/DemoData/UnitTests/IgorUtil/"
+    data_base = base + "Image0341"
     exts = ["Defl","DeflV","Force","Sep","Time","ZSnsr"]
     files = [data_base + e + ".ibw" for e in exts]
     all_types = [PxpLoader.read_ibw_as_wave(f) for f in files]
