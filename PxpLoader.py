@@ -227,6 +227,18 @@ def LoadPxp(inFile,grouping_function=ProcessSingleWave.IgorNameRegex,
     return GroupWavesByEnding(mWaves,grouping_function=grouping_function,
                               name_pattern=name_pattern)
 
+def _read_all_ibw(in_dir,f_file_name_valid = lambda _: True):
+    """
+    :param in_dir: input directory
+    :param f_file_name_valid: accepts file name, returns true if valid wave
+    :return:
+    """
+    assert in_dir is not None , "input directory was None; can't load there."
+    files = pGenUtil.getAllFiles(in_dir,ext=".ibw")
+    files = [f for f in files if f_file_name_valid(f)]
+    ibw_waves = [read_ibw_as_wave(f) for f in files]
+    return ibw_waves
+
 def load_ibw_from_directory(in_dir,grouping_function,limit=None,
                             f_file_name_valid=lambda f: True):
     """
@@ -240,10 +252,7 @@ def load_ibw_from_directory(in_dir,grouping_function,limit=None,
     Returns:
         dictionary: see GroupWavesByEnding, same output
     """
-    assert in_dir is not None , "input directory was None; can't load there."
-    files = pGenUtil.getAllFiles(in_dir,ext=".ibw")
-    files = [f for f in files if f_file_name_valid(f)]
-    ibw_waves = [read_ibw_as_wave(f) for f in files]
+    ibw_waves = _read_all_ibw(in_dir,f_file_name_valid)
     dict_raw = GroupWavesByEnding(ibw_waves,grouping_function=grouping_function)
     dict_ret = dict([ [k,v] for k,v in dict_raw.items()][:limit])
     return dict_ret
