@@ -242,19 +242,6 @@ class WaveObj:
     def SetName(self,NewName):
         self.Note["Name"]= NewName
         self.name = NewName
-    def ImagePixelSize(self):
-        """
-        Returns the pixel size (in meters; side of a pixel) for this,
-        *assuming* the wave is an image. XXX assume square images
-        """
-        ScanString = self.Note["SlowScanSize"]
-        try:
-            size_in_meters = float(ScanString)
-        except ValueError:
-            # can have prolblems parsing string...
-            size_in_meters = float(ScanString.split("@")[0])
-        num_scan_points = self.Note["ScanPoints"]
-        return float(size_in_meters)/float(num_scan_points)
     def Name(self):
         return self.Note["Name"]
     def SpringConstant(self):

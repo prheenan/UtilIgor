@@ -35,14 +35,39 @@ class SurfaceImage(ProcessSingleWave.WaveObj):
         """
         height = Example.DataY[:,:,0]
         self.height = height
-        self.pixel_size_meters = Example.ImagePixelSize()
-        self.NumRows = height.shape[0]
-        self.range_meters = self.pixel_size_meters * self.NumRows
+        self._shape_original = self.height.shape
         self.Note = Example.Note
         self.Meta = TimeSepForceObj.Bunch(self.Note)
     def rotate(self,angle_degrees,**kwargs):
-        self.height = ndimage.interpolation.rotate(self.height,
-                                                   angle=angle_degrees,**kwargs)
+        return ndimage.interpolation.rotate(self.height,
+                                            angle=angle_degrees,**kwargs)
+    @property
+    def shape_original(self):
+        return self._shape_original
+    @shape_original.setter
+    def shape_original(self,s):
+        self._shape_original = s
+    @property
+    def pixel_size_meters(self):
+        """
+        :return: gives the meters per pixel in the x dimensions
+        """
+        shape = self._shape_original
+        n_x, n_y = shape
+        if n_x > n_y:
+            size_x_m = self.Note['FastScanSize']
+        elif n_y > n_x:
+            size_x_m = self.Note['SlowScanSize']
+        else:
+            # equal
+            size_x_m = self.Note['FastScanSize']
+        return size_x_m/n_x
+    @property
+    def range_meters(self):
+        return self.pixel_size_meters * self.NumRows
+    @property
+    def NumRows(self):
+        return self.height.shape[0]
     def height_nm(self):
         """
         Returns the height as a 2-D array in nm
