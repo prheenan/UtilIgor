@@ -42,12 +42,6 @@ class SurfaceImage(ProcessSingleWave.WaveObj):
         return ndimage.interpolation.rotate(self.height,
                                             angle=angle_degrees,**kwargs)
     @property
-    def shape_original(self):
-        return self._shape_original
-    @shape_original.setter
-    def shape_original(self,s):
-        self._shape_original = s
-    @property
     def pixel_size_meters(self):
         """
         :return: gives the meters per pixel in the x dimensions
