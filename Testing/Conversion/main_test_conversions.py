@@ -11,7 +11,7 @@ import sys, os
 
 sys.path.append("../../../")
 
-from UtilIgor import PxpLoader
+from UtilIgor import PxpLoader, TimeSepForceObj,ProcessSingleWave,WaveDataGroup
 from UtilIgor import CypherUtil
 
 def _check(x,y,**kw):
@@ -53,7 +53,8 @@ def run():
     else:
         server_dir = "//Volumes/group/"
     base = server_dir + "4Patrick/DemoData/UnitTests/IgorUtil/"
-    data_base = base + "Image0341"
+    image_expected = "Image0341"
+    data_base = base + image_expected
     exts = ["Defl","DeflV","Force","Sep","Time","ZSnsr"]
     files = [data_base + e + ".ibw" for e in exts]
     all_types = [PxpLoader.read_ibw_as_wave(f) for f in files]
@@ -113,7 +114,44 @@ def run():
         check_f(f,fwd,args_identity_f,fwd,**common_assert)
         check_f(f,rev,args_identity_r,rev,**common_assert)
     # POST: all single conversions worked...
+    # # check that the higher level TimeSepForce object is reasonable 
+    fec = TimeSepForceObj._cols_to_TimeSepForceObj(sep=sep.DataY,
+                                                   force=force.DataY,
+                                                   time=time.DataY,
+                                                   meta_dict=sep.Note)
+    np.testing.assert_allclose(fec.Separation,sep.DataY,**common_assert)
+    np.testing.assert_allclose(fec.Force,force.DataY,**common_assert)
+    # note that we use ZSnsr -> -Z, so that we have it increasing from the
+    # surface,
+    np.testing.assert_allclose(fec.ZSnsr,-1 * zsnsr.DataY,**common_assert)
+    # POST: 'fec' is reasonable.
+    # # check that reading all the ibws is OK
+    grouping = ProcessSingleWave.IgorNameRegex
+    group = PxpLoader.load_ibw_from_directory(in_dir=base,
+                                              grouping_function=grouping)
+    assert image_expected in group , "Couldn't find correct files"
+    tmp_group = group[image_expected]
+    for name,data in zip(exts,all_types):
+        assert name.lower() in tmp_group
+        wave = tmp_group[name.lower()]
+        np.testing.assert_allclose(wave.DataY,data.DataY,**common_assert)
+    # POST: all members of group are there and correct.
+    # # make sure the conversion to TimeSepForce works well
+    wave_group = WaveDataGroup.WaveDataGroup(tmp_group)
+    fec_new = TimeSepForceObj.TimeSepForceObj(wave_group)
+    np.testing.assert_allclose(fec.Separation,fec_new.Separation,
+                               **common_assert)
+    np.testing.assert_allclose(fec.Force,fec_new.Force,**common_assert)
+    np.testing.assert_allclose(fec.ZSnsr,fec_new.ZSnsr,**common_assert)
+    # the source file and name may change, since there are multiple ibws
+    fec_new.Meta.SourceFile = fec.Meta.SourceFile
+    fec_new.Meta.Name = fec.Meta.Name
+    for k,v in fec.Meta.__dict__.items():
+        v_new_str = str(fec_new.Meta.__dict__[k])
+        v_str = str(v)
+        assert v_new_str == v_str, \
+            "{:s},[{:s}] =!= {:s},[{:s}]".format(k,v_str,k,v_new_str)
+    # # POST: note and data are correct
     
-
 if __name__ == "__main__":
     run()
