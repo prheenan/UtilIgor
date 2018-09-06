@@ -42,20 +42,45 @@ class SurfaceImage(ProcessSingleWave.WaveObj):
         return ndimage.interpolation.rotate(self.height,
                                             angle=angle_degrees,**kwargs)
     @property
-    def pixel_size_meters(self):
+    def _pixel_shape_meters(self):
         """
-        :return: gives the meters per pixel in the x dimensions
+        :return: the shape of the x and y axis, in meters
         """
         shape = self._shape_original
         n_x, n_y = shape
         if n_x > n_y:
-            size_x_m = self.Note['FastScanSize']
+            str_x = 'FastScanSize'
+            str_y = 'SlowScanSize'
         elif n_y > n_x:
-            size_x_m = self.Note['SlowScanSize']
+            str_x = 'SlowScanSize'
+            str_y = 'FastScanSize'
         else:
             # equal
-            size_x_m = self.Note['FastScanSize']
-        return size_x_m/n_x
+            str_x = 'FastScanSize'
+            str_y = str_x
+        size_x_m = self.Note[str_x]
+        size_y_m = self.Note[str_y]
+        shape_x = size_x_m/n_x
+        shape_y = size_y_m/n_y
+        return shape_x, shape_y
+    @property
+    def pixel_size_meters_x(self):
+        """
+        :return: gives the meters per pixel in the x dimensions
+        """
+        return self._pixel_shape_meters[0]
+    @property
+    def pixel_size_meters_y(self):
+        """
+        :return: gives the meters per pixel in the x dimensions
+        """
+        return self._pixel_shape_meters[1]
+    @property
+    def pixel_size_meters(self):
+        """
+        :return: the pixel size (assumes a square image)
+        """
+        return self.pixel_size_meters_x
     @property
     def range_meters(self):
         return self.pixel_size_meters * self.NumRows
