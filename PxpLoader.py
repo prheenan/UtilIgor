@@ -42,26 +42,22 @@ class SurfaceImage(ProcessSingleWave.WaveObj):
         return ndimage.interpolation.rotate(self.height,
                                             angle=angle_degrees,**kwargs)
     @property
+    def range_x_m(self):
+        return self.Note['SlowScanSize']
+    @property
+    def range_y_m(self):
+        return self.Note['FastScanSize']
+    @property
     def _pixel_shape_meters(self):
         """
         :return: the shape of the x and y axis, in meters
         """
         shape = self._shape_original
-        n_x, n_y = shape
-        if n_x > n_y:
-            str_x = 'FastScanSize'
-            str_y = 'SlowScanSize'
-        elif n_y > n_x:
-            str_x = 'SlowScanSize'
-            str_y = 'FastScanSize'
-        else:
-            # equal
-            str_x = 'FastScanSize'
-            str_y = str_x
-        size_x_m = self.Note[str_x]
-        size_y_m = self.Note[str_y]
-        shape_x = size_x_m/n_x
-        shape_y = size_y_m/n_y
+        # number of columns is x size
+        # number of rows is y size
+        n_y, n_x = shape
+        shape_x = self.range_x_m/n_x
+        shape_y = self.range_y_m/n_y
         return shape_x, shape_y
     @property
     def pixel_size_meters_x(self):
@@ -83,7 +79,7 @@ class SurfaceImage(ProcessSingleWave.WaveObj):
         return self.pixel_size_meters_x
     @property
     def range_meters(self):
-        return self.pixel_size_meters * self.NumRows
+        return self.range_x_m
     @property
     def NumRows(self):
         return self.height.shape[0]
