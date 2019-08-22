@@ -427,7 +427,7 @@ def HasValidExt(mWave):
             return True
     return False
     
-def ValidName(mWave):
+def ValidName(mWave,name_pattern=IgorNamePattern,sanitize_name=False):
     """  
     Returns true/false if the wave has the correct formatting for a data wave
         
@@ -440,7 +440,9 @@ def ValidName(mWave):
     name = GetWaveName(mWave)
     # loop through each extension, return true on a match
     name = str(name.lower())
-    match = IgorNamePattern.match(str(name))
+    if sanitize_name:
+        name = name.replace("b'", "").replace("\'", "")
+    match = name_pattern.match(str(name))
     # do we have a valid name?
     if (match is None):
         return False

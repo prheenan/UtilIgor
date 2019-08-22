@@ -320,7 +320,10 @@ def GetSepForce(WaveDict):
     mWaves = [WaveDict[k] for k in names]
     InX = mWaves[lowerNames.index(xName)]
     InY = mWaves[lowerNames.index(yName)]
-    X,Y = ConvertGen(InX,InY,xType,yType,MOD_X_TYPE_SEP,
-                     MOD_Y_TYPE_FORCE_NEWTONS)
-    return X,Y
+    if xType == MOD_X_TYPE_SEP and yType == MOD_Y_TYPE_FORCE_NEWTONS:
+        return InX.DataY, InY.DataY
+    else:
+        X,Y = ConvertGen(InX,InY,xType,yType,MOD_X_TYPE_SEP,
+                         MOD_Y_TYPE_FORCE_NEWTONS)
+        return X,Y
     

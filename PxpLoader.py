@@ -122,14 +122,14 @@ def LoadPxpFilesFromDirectory(directory):
         d.extend(LoadAllWavesFromPxp(f))
     return d
 
-def IsValidFec(Record):
+def IsValidFec(Record,**kw):
     """
     Args:
         Wave: igor WaveRecord type
     Returns:
         True if the waves is consistent with a FEC
     """
-    return ProcessSingleWave.ValidName(Record.wave)
+    return ProcessSingleWave.ValidName(Record.wave,**kw)
 
 def valid_fec_allow_endings(Record):
     name = ProcessSingleWave.GetWaveName(Record.wave).lower()
@@ -166,7 +166,7 @@ def IsValidImage(Record):
         return False
     return True
 
-def LoadAllWavesFromPxp(filepath,load_func=loadpxp,ValidFunc=IsValidFec):
+def LoadAllWavesFromPxp(filepath,load_func=loadpxp,ValidFunc=IsValidFec,**kw):
     """
     Given a file path to an igor pxp file, loads all waves associated with it
 
@@ -184,7 +184,7 @@ def LoadAllWavesFromPxp(filepath,load_func=loadpxp,ValidFunc=IsValidFec):
         # if this is a wave with a proper name, go for it
         if isinstance(record, WaveRecord):
             # determine if the wave is something we care about
-            if (not ValidFunc(record)):
+            if (not ValidFunc(record,**kw)):
                 continue
             # POST: have a valid name
             WaveObj = ProcessSingleWave.WaveObj(record=record.wave,
@@ -263,7 +263,7 @@ def LoadPxp(inFile,grouping_function=ProcessSingleWave.IgorNameRegex,
     Returns:
         dictionary: see GroupWavesByEnding, same output
     """
-    mWaves = LoadAllWavesFromPxp(inFile,**kwargs)
+    mWaves = LoadAllWavesFromPxp(inFile,name_pattern=name_pattern,**kwargs)
     return GroupWavesByEnding(mWaves,grouping_function=grouping_function,
                               name_pattern=name_pattern)
 

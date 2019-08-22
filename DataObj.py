@@ -29,8 +29,12 @@ class DataObj:
         SepObj = WaveObj(DataY=self.sep,
                          Note=self.meta)
         ForceObj = WaveObj(DataY=self.force,Note=self.meta)
-        self.Zsnsr,_ =  ConvertSepForceToZsnsrDeflV(SepObj,ForceObj)
-        self.Zsnsr *= -1
+        try:
+            self.Zsnsr,_ =  ConvertSepForceToZsnsrDeflV(SepObj,ForceObj)
+            self.Zsnsr *= -1
+        except KeyError as e:
+            print("DataObj.__init__ KeyError:" + str(e))
+            print("Couldn't make ZSnsr -- ignoring.")
     def GetTimeSepForce(self):
         """
         Returns time,sep,force as a tuple
