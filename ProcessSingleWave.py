@@ -436,8 +436,15 @@ def HasValidExt(mWave):
         if ext in name:
             return True
     return False
-    
-def ValidName(mWave,name_pattern=IgorNamePattern,sanitize_name=True):
+
+def valid_ext(name):
+    for ext in DATA_EXT:
+        if name.endswith(ext):
+            return True
+    return False
+
+def ValidName(mWave,name_pattern=IgorNamePattern,sanitize_name=True,
+              valid_ext_func=valid_ext):
     """  
     Returns true/false if the wave has the correct formatting for a data wave
         
@@ -457,11 +464,7 @@ def ValidName(mWave,name_pattern=IgorNamePattern,sanitize_name=True):
     if (match is None):
         return False
     # do we have a known extension?
-    for ext in DATA_EXT:
-        if name.endswith(ext):
-            return True
-    # valid name, but invalid extension
-    return False
+    return valid_ext_func(name)
 
 def pprint(data):
     lines = pformat(data).splitlines()
