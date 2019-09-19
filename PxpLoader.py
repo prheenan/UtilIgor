@@ -151,7 +151,8 @@ def IsValidImage(Record):
     # last four characters should be numbers (eg Image0007)
     Numbers = 4
     pattern = re.compile("^[0-9]{4}$")
-    if (not pattern.match(Name[-Numbers:])):
+    str_v = str(Name[-Numbers:]).replace("b'","").replace("'","")
+    if (not pattern.match(str_v)):
         return False
     # now we need to check the dimensionality of the wave
     WaveStruct =  ProcessSingleWave.GetWaveStruct(Wave)
@@ -162,7 +163,9 @@ def IsValidImage(Record):
     # POST: wave has three dimensions.
     # check that the scan size and such are in there 
     note = ProcessSingleWave.GetNote(WaveStruct)
-    if ("SlowScanSize" not in note or "ScanPoints" not in note):
+    invalid_node = ("SlowScanSize" not in note or "ScanPoints" not in note)
+    if invalid_node:
+        print(note)
         return False
     return True
 
