@@ -22,6 +22,8 @@ import copy
 # ending for concatenated waves
 ENDING_CONCAT = "Concat"
 
+import sys
+
 # make a verbose pattern for getting names
 IgorNamePattern = re.compile(r"""
                          ^ # start of the string
@@ -101,10 +103,18 @@ def GetNote(wavestruct):
     # split the note by newlines
     # we turn any \r or ; into a newline, any = into a colon.
     # we then split on newlines, then parse <key><literal :><value>
-    mNote =  wavestruct[WAVE_NOTE_STR]
-    mNote = str(mNote).replace(";","\r\n")
+    note_orig =  wavestruct[WAVE_NOTE_STR]
+    # unfortunately, I haven't found a better way of dealign with splitting the
+    # strings...
+    if sys.version_info[0] < 3:
+        str_semi = ";"
+        str_r = "\r"
+    else:
+        str_semi = str(r";")
+        str_r = str(r"\r")
+    mNote = str(note_orig).replace(str_semi, str_r)
     # get note:value pairs
-    lines = str(mNote).strip().split("\r")
+    lines = str(mNote).strip().split(str_r)
     pattern = re.compile(r"""
                          (?:b')?      # possible non-capture byte start
                          [\s\r]?        # possible whitespace
@@ -426,8 +436,15 @@ def HasValidExt(mWave):
         if ext in name:
             return True
     return False
-    
-def ValidName(mWave):
+
+def valid_ext(name):
+    for ext in DATA_EXT:
+        if name.endswith(ext):
+            return True
+    return False
+
+def ValidName(mWave,name_pattern=IgorNamePattern,sanitize_name=True,
+              valid_ext_func=valid_ext):
     """  
     Returns true/false if the wave has the correct formatting for a data wave
         
@@ -440,16 +457,14 @@ def ValidName(mWave):
     name = GetWaveName(mWave)
     # loop through each extension, return true on a match
     name = str(name.lower())
-    match = IgorNamePattern.match(str(name))
+    if sanitize_name:
+        name = name.replace("b'", "").replace("\'", "")
+    match = name_pattern.match(str(name))
     # do we have a valid name?
     if (match is None):
         return False
     # do we have a known extension?
-    for ext in DATA_EXT:
-        if name.endswith(ext):
-            return True
-    # valid name, but invalid extension
-    return False
+    return valid_ext_func(name)
 
 def pprint(data):
     lines = pformat(data).splitlines()

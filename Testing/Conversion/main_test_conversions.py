@@ -49,7 +49,7 @@ def run():
     (7) check x <-> x, where x is any of the above.
     """
     if os.name == "nt":
-        server_dir = "//perknas2.colorado.edu/group/"
+        server_dir = "//perknas3.colorado.edu/group/"
     else:
         server_dir = "//Volumes/group/"
     base = server_dir + "4Patrick/DemoData/UnitTests/IgorUtil/"
@@ -152,6 +152,24 @@ def run():
         assert v_new_str == v_str, \
             "{:s},[{:s}] =!= {:s},[{:s}]".format(k,v_str,k,v_new_str)
     # # POST: note and data are correct
-    
+    # check some conceptual conversions
+    # ASSERT:
+    # F = k * (x - z)
+    f_calc = fec.SpringConstant * (fec.Separation - fec.ZSnsr)
+    np.testing.assert_allclose(f_calc, force.DataY, **common_assert)
+    # ASSERT:
+    # defl (meters) = x - z
+    defl_m_calc = fec.Separation - fec.ZSnsr
+    np.testing.assert_allclose(defl_m_calc, defl.DataY, atol=1e-12)
+    # ASSERT:
+    # defl (volts) = defl(meters) * invols
+    invols = fec.Meta.InvOLS
+    defl_V_calc = (fec.Separation - fec.ZSnsr) / invols
+    np.testing.assert_allclose(defl_V_calc, deflv.DataY, atol=1e-6)
+    # ASSERT:
+    # F = k * invols * defl_v
+    f_calc_2 = invols * fec.SpringConstant * deflv.DataY
+    np.testing.assert_allclose(f_calc_2, force.DataY, **common_assert)
+
 if __name__ == "__main__":
     run()
