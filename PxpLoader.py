@@ -165,7 +165,6 @@ def IsValidImage(Record):
     note = ProcessSingleWave.GetNote(WaveStruct)
     invalid_node = ("SlowScanSize" not in note or "ScanPoints" not in note)
     if invalid_node:
-        print(note)
         return False
     return True
 
