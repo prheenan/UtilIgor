@@ -167,7 +167,8 @@ def GetWaveNameFromHeader(header):
     Returns:
         the wave name
     """
-    return header['bname']
+    # return the string, minus any byte bullshit
+    return str(header['bname']).replace("b'","").replace("'","")
 
 class WaveObj:
     def __init__(self,record=None,SourceFile = None, Note=None,DataY=None):
