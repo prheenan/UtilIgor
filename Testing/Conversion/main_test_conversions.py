@@ -49,7 +49,7 @@ def run():
     (7) check x <-> x, where x is any of the above.
     """
     if os.name == "nt":
-        server_dir = "//perknas2.colorado.edu/group/"
+        server_dir = "//perknas3.colorado.edu/group/"
     else:
         server_dir = "//Volumes/group/"
     base = server_dir + "4Patrick/DemoData/UnitTests/IgorUtil/"
